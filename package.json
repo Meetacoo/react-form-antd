@@ -1,13 +1,16 @@
 {
   "name": "@kne/react-form-antd",
-  "version": "2.2.0",
-  "description": "把@kne/react-form 表单校验逻辑应用到antd",
+  "version": "3.1.2",
+  "syntax": {
+    "esmodules": true
+  },
+  "description": "把 @kne/react-form 表单校验逻辑应用到antd",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
   "scripts": {
-    "init": "npm install && cd example && npm install",
-    "create-fields": "node ./scripts/createIndex.js",
+    "init-example": "modules-dev-libs-init",
+    "create-fields": "node ./scripts/createIndex.mjs",
     "start": "run-p start:lib start:example",
     "build": "run-s create-fields build:lib build:example",
     "build:lib": "microbundle --no-compress --format modern,cjs --jsx React.createElement --jsxFragment React.Fragment",
@@ -53,39 +56,40 @@
   "homepage": "https://github.com/kne-union/react-form-antd#readme",
   "peerDependencies": {
     "@kne/react-fetch": "1.x",
-    "antd": ">=4.x",
+    "antd": ">=5.x",
     "prop-types": ">=15.x",
     "react": ">=16.x"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
     "@babel/runtime": "^7.10.3",
-    "@kne/react-form": "^2.1.0",
-    "@kne/react-form-helper": "^1.0.20",
+    "@kne/react-form": "^2.1.16",
+    "@kne/react-form-helper": "^1.0.36",
     "@kne/use-control-value": "^0.1.1",
-    "@kne/use-event": "^0.1.2",
+    "@kne/use-event": "^0.1.3",
     "@kne/with-layer": "^0.1.5",
     "classnames": "^2.2.6",
+    "dayjs": "^1.11.7",
     "lodash": "^4.17.15",
-    "moment": "^2.29.1",
-    "react-avatar-editor": "^12.0.0"
+    "react-avatar-editor": "^13.0.0"
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@kne/microbundle": "^0.15.4",
+    "@kne/modules-dev": "^2.0.3",
     "@kne/react-fetch": "^0.1.12",
-    "antd": "^4.16.13",
+    "antd": "^5.0.2",
     "axios": "^0.21.4",
     "cross-env": "^7.0.3",
     "fs-extra": "^9.0.1",
     "gh-pages": "^3.2.3",
-    "glob": "^7.1.6",
+    "glob": "^10.3.3",
     "husky": "^7.0.2",
-    "microbundle": "^0.13.3",
-    "node-sass": "^6.0.1",
+    "node-sass": "^9.0.0",
     "npm-run-all": "^4.1.5",
     "pify": "^5.0.0",
     "prettier": "^2.4.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "^4.0.3"
+    "react-dom": "^18.2.0"
   }
 }

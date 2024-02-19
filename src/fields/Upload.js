@@ -3,18 +3,24 @@ import {Upload, message, Button} from 'antd';
 import {
     UploadOutlined
 } from '@ant-design/icons';
-import get from 'lodash/get';
-import groupBy from 'lodash/groupBy';
-import uniqueId from 'lodash/uniqueId';
+import {get, groupBy, uniqueId, omit} from 'lodash';
 import {hooks} from '@kne/react-form-helper';
 import {globalParams} from "../preset";
-import omit from "lodash/omit";
+import AvatarInput from "./Avatar.js";
 
 const {useOnChange} = hooks;
 
 const {Dragger} = Upload;
 
 const uploadParams = globalParams.field.upload;
+
+const decodeURIComponentSafe = (str) => {
+    try {
+        return decodeURIComponent(str);
+    } catch (e) {
+        return str;
+    }
+};
 
 const computedFilename = (path, displayFilename = 'filename') => {
     const strArray = path.split('?');
@@ -25,7 +31,7 @@ const computedFilename = (path, displayFilename = 'filename') => {
             query[key] = value;
         });
         if (query[displayFilename]) {
-            return decodeURIComponent(query[displayFilename]);
+            return decodeURIComponentSafe(query[displayFilename]);
         }
     }
     return path;
@@ -70,15 +76,17 @@ const _Upload = ({
     const [list, setList] = useState([]);
     const valueList = useMemo(() => {
         return valueToList(value.filter((url) => {
-            return !list.find((file) => get(file, 'response.results') === url);
+            return !list.find((file) => decodeURIComponentSafe(get(file, 'response.results', '')) === decodeURIComponentSafe(url));
         }), displayFilename).concat(list);
     }, [list, value, displayFilename]);
     const changeHandler = (info) => {
         if (['uploading', 'done', 'error', 'removed'].indexOf(info.file.status) === -1) {
             return;
         }
-        if (info.fileList.length > maxLength) {
-            onError(`上传文件不能超过最大允许数量${maxLength}`, 'lengthError', maxLength);
+        if (info.fileList?.length > maxLength) {
+            if (JSON.stringify(info.file) === JSON.stringify(info.fileList[info.fileList?.length - 1])) {
+                onError(`上传文件不能超过最大允许数量${maxLength}`, 'lengthError', maxLength);
+            }
             return;
         }
         if (info.file.status === 'done' && info.fileList.find(({uid}) => uid === info.file.uid)) {
@@ -95,7 +103,20 @@ const _Upload = ({
         if (['done', 'removed'].indexOf(info.file.status) > -1) {
             onChange(listToValue(done));
         }
-        setList(info.fileList);
+        setList((list) => {
+            const newList = list.slice(0);
+            const index = list.findIndex(({uid}) => uid === info.file.uid);
+            if (info.file.status === 'removed') {
+                index > -1 && newList.splice(index, 1);
+                return newList;
+            }
+            if (index === -1) {
+                newList.push(info.file);
+                return newList;
+            }
+            newList.splice(index, 1, info.file);
+            return newList;
+        });
     };
     const beforeUploadHandler = (file, fileList) => {
         const isLt = file.size / 1024 / 1024 < size;
@@ -151,6 +172,6 @@ UploadInput.defaultProps = {
 };
 
 
-UploadInput.field = _Upload;
+UploadInput.field = AvatarInput.Field = _Upload;
 
 export default UploadInput;

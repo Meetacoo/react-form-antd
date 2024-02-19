@@ -1,13 +1,13 @@
 import {Button, DatePicker} from 'antd';
-import React, {useRef, useEffect, useMemo} from 'react'
-import moment from 'moment'
-import get from 'lodash/get'
+import React, {useRef, useMemo} from 'react'
+import dayjs from 'dayjs'
+import {get} from 'lodash'
 import useControlValue from '@kne/use-control-value'
 import {hooks} from '@kne/react-form-helper';
 
 const {useOnChange} = hooks;
 
-const PickerToday = ({soFarText, ...props}) => {
+const PickerToday = ({soFarText, startProps, endProps, ...props}) => {
     const [data, onChange] = useControlValue(props);
     const ref_d = useRef();
     const newData = useMemo(() => {
@@ -16,8 +16,8 @@ const PickerToday = ({soFarText, ...props}) => {
         const d = get(data, 1, '');
         const p = get(props, ['placeholder'], ['开始日期', '结束日期']);
         return {
-            start: s ? moment(s) : '',
-            end: d === '至今' ? null : (d ? moment(d) : ''),
+            start: s ? dayjs(s) : '',
+            end: d === '至今' ? null : (d ? dayjs(d) : ''),
             showZj: d === '至今',
             placeholder: p
         }
@@ -52,7 +52,7 @@ const PickerToday = ({soFarText, ...props}) => {
     }
     return (
         <div style={{display: 'flex'}}>
-            <DatePicker {...{showToday: false, ...props, placeholder: newData.placeholder[0], value: newData.start}}
+            <DatePicker {...{showToday: false, ...props, placeholder: newData.placeholder[0], ...startProps, value: newData.start}}
                         onChange={startChange}/>
             <div className={'svg_box'}>
                 <svg viewBox="0 0 1024 1024" focusable="false" data-icon="swap-right" width="1em" height="1em"
@@ -67,6 +67,7 @@ const PickerToday = ({soFarText, ...props}) => {
                     showToday: false,
                     ...props,
                     placeholder: newData.showZj ? '' : newData.placeholder[1],
+                    ...endProps,
                     value: newData.end
                 }} ref={ref_d}
                             onChange={endChange} renderExtraFooter={foot}/>

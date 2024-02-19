@@ -1,7 +1,7 @@
 import React, {forwardRef} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import ReactForm from '@kne/react-form';
+import {Form as ReactForm} from '@kne/react-form';
 import {widget} from '@kne/react-form-helper';
 import './assets/index.scss';
 import {globalParams} from './preset';
@@ -26,8 +26,7 @@ const Form = forwardRef((originProps, ref) => {
     const baseClass = 'react-form';
     let computedClass = baseClass;
     const {type, size} = Object.assign({
-        type: 'default',
-        size: 'middle'
+        type: 'default', size: 'middle'
     }, globalParams, originProps);
     if (type !== 'default') {
         computedClass += `--${type}`;
@@ -41,28 +40,24 @@ const Form = forwardRef((originProps, ref) => {
         {children}
     </MaxLabelProvider>;
 
-    return (
-        <form className={classnames(baseClass, computedClass, className)} onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        }}>
-            <SizeProvider value={{size}}>
-                <ReactForm {...props} ref={ref}>
-                    {cache ? <FormStore cache={cache}/> : null}
-                    {scrollToError ? <ScrollToError scrollProps={scrollProps}/> : null}
-                    {enterSubmit ? <EnterSubmit>
-                        {maxLabel}
-                    </EnterSubmit> : maxLabel}
-                </ReactForm>
-            </SizeProvider>
-        </form>
-    );
+    return (<form className={classnames(baseClass, computedClass, className)} onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }}>
+        <SizeProvider value={{size}}>
+            <ReactForm {...props} ref={ref}>
+                {cache ? <FormStore cache={cache}/> : null}
+                {scrollToError ? <ScrollToError scrollProps={scrollProps}/> : null}
+                {enterSubmit ? <EnterSubmit>
+                    {maxLabel}
+                </EnterSubmit> : maxLabel}
+            </ReactForm>
+        </SizeProvider>
+    </form>);
 });
 
 Form.defaultProps = {
-    scrollToError: true,
-    enterSubmit: false,
-    scrollProps: {
+    scrollToError: true, enterSubmit: false, scrollProps: {
         block: 'center'
     }
 };

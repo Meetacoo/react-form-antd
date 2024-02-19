@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect, forwardRef} from "react";
-import {Upload, message, Modal, Slider, Row, Col, Tooltip} from "antd";
+import {Upload, message, Modal, Slider, Row, Col, Tooltip, App} from "antd";
 import withLayer from '@kne/with-layer';
 import {globalParams} from "../preset";
 import classnames from "classnames";
@@ -8,8 +8,7 @@ import {
 } from "@ant-design/icons";
 import AvatarEditor from "react-avatar-editor";
 import {hooks} from "@kne/react-form-helper";
-import merge from 'lodash/merge';
-import omit from 'lodash/omit';
+import {merge, omit} from 'lodash';
 import Rotate from '../assets/rotate';
 import Full from '../assets/full';
 import getPopupContainer from '../common/getPopupContainer';
@@ -26,6 +25,7 @@ const createAvatarEditor = withLayer(({close, file, editor, onComplete, ...props
         }
         return 0.35;
     });
+    const {modal} = App.useApp();
 
     return <Modal {...props} className={editor.className} centered onOk={() => {
         onComplete && onComplete(editorRef.current.getImage().toDataURL());
@@ -59,9 +59,7 @@ const createAvatarEditor = withLayer(({close, file, editor, onComplete, ...props
                 }}/></Tooltip></Col>
                 <Col flex={1}>
                     <Slider className="react-form-avatar-slider" tooltip={{
-                        placement: "bottom",
-                        formatter: () => '大小',
-                        getPopupContainer
+                        placement: "bottom", formatter: () => '大小', getPopupContainer
                     }} value={scale} step={0.05} min={0.2} max={3} onChange={setScale}/>
                 </Col>
             </Row>
